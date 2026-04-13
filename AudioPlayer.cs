@@ -1,4 +1,5 @@
-﻿using System.Media;
+﻿using System;
+using System.Media;
 using System.IO;
 
 public static class AudioPlayer
@@ -7,6 +8,10 @@ public static class AudioPlayer
     {
         try
         {
+            // Skip audio in CI environment
+            if (Environment.OSVersion.Platform == PlatformID.Unix)
+                return;
+
             string path = Path.Combine("Assets", "greeting.wav");
 
             if (File.Exists(path))
@@ -17,7 +22,7 @@ public static class AudioPlayer
         }
         catch
         {
-            Console.WriteLine("⚠️ Audio could not be played.");
+            Console.WriteLine("Audio failed.");
         }
     }
 }
