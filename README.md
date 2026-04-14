@@ -24,7 +24,7 @@ A C# console chatbot that educates users about cybersecurity topics.
 3. Ensure `greeting.wav` is in the Assets folder
 
 ## CI Workflow
-(Insert screenshot here)
+()
 
 ## Author
 Your NameThis Code includes Chatbot Code
