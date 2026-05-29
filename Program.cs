@@ -1,19 +1,17 @@
 ﻿using System;
+using System.Windows.Forms;
 
-class Program
+namespace CybersecurityAwarenessBot
 {
-    static void Main(string[] args)
+    internal static class Program
     {
-        UIHelper.DisplayHeader();
+        [STAThread]
+        static void Main()
+        {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
 
-        AudioPlayer.PlayGreeting();
-
-        Console.Write("\nEnter your name: ");
-        string name = Console.ReadLine();
-
-        name = InputHandler.ValidateName(name);
-
-        Chatbot bot = new Chatbot(name);
-        bot.StartChat();
+            Application.Run(new MainForm());
+        }
     }
 }
