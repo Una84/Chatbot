@@ -1,28 +1,26 @@
-﻿using System;
-using System.Media;
 using System.IO;
+using System.Media;
 
-public static class AudioPlayer
+namespace CybersecurityAwarenessBot
 {
-    public static void PlayGreeting()
+    public static class AudioPlayer
     {
-        try
+        public static void PlayGreeting()
         {
-            // Skip audio in CI environment
-            if (Environment.OSVersion.Platform == PlatformID.Unix)
-                return;
-
-            string path = Path.Combine("Assets", "greeting.wav");
-
-            if (File.Exists(path))
+            try
             {
-                SoundPlayer player = new SoundPlayer(path);
-                player.PlaySync();
+                string path = Path.Combine("Assets", "greeting.wav");
+
+                if (File.Exists(path))
+                {
+                    SoundPlayer player = new SoundPlayer(path);
+                    player.Play();
+                }
             }
-        }
-        catch
-        {
-            Console.WriteLine("Audio failed.");
+            catch
+            {
+
+            }
         }
     }
 }
