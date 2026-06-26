@@ -14,6 +14,10 @@ This project started as a console-based chatbot in Part 1 and was upgraded in Pa
 
 The chatbot helps users learn about online safety, scams, phishing, password protection, privacy, and general cybersecurity awareness.
 
+In Part 3, the system was extended into a fully interactive cybersecurity learning platform with task management, a quiz system, NLP simulation, and activity tracking using a database-backed architecture.
+
+The chatbot helps users learn about online safety, scams, phishing, password protection, privacy, and general cybersecurity awareness.
+
 ---
 
 # Features
@@ -165,6 +169,114 @@ The GUI includes:
 - Advanced sentiment analysis
 - Online API integration
 - Multi-language support
+
+---
+
+# Part 3 Features (POE FINAL ENHANCEMENTS)
+
+## 🗂 Task Assistant with MySQL Database
+A full task management system was added to help users manage cybersecurity-related tasks.
+
+### Features:
+- Add cybersecurity tasks
+- Store tasks in MySQL database
+- View all tasks in GUI
+- Delete tasks
+- Mark tasks as completed
+- Add reminder dates
+
+### Example tasks:
+- Enable Two-Factor Authentication
+- Update passwords regularly
+- Review privacy settings
+
+---
+
+## 🎮 Cybersecurity Quiz Game
+A fully interactive quiz system was added to reinforce cybersecurity learning.
+
+### Features:
+- 10+ cybersecurity questions
+- Multiple-choice and True/False format
+- Instant feedback after each answer
+- Score tracking system
+- Final performance message
+
+### Example feedback:
+- Excellent performance
+- Good cybersecurity knowledge
+- Needs improvement
+
+---
+
+## 🧠 NLP Simulation (Natural Language Processing)
+A simulated NLP system was implemented using keyword detection and string matching.
+
+### Features:
+- Detects user intent even with different phrasing
+- Understands commands like:
+  - "Add task"
+  - "Create reminder"
+  - "Start quiz"
+  - "Show activity log"
+- Reduces need for exact input formatting
+
+---
+
+## 📊 Activity Log System
+An activity tracking system was added to monitor chatbot actions.
+
+### Features:
+- Logs all major actions
+- Stores timestamps
+- Displays last 10 actions
+- Tracks:
+  - Task creation
+  - Quiz attempts
+  - Sentiment detection
+  - User interactions
+
+---
+
+## 🎨 Enhanced GUI System
+The Windows Forms interface was upgraded to include multiple functional panels.
+
+### GUI Includes:
+- Chat interface panel
+- Task manager panel
+- Quiz game panel
+- Activity log panel
+- Cybersecurity-themed design
+
+---
+
+# Technologies Used
+- C#
+- .NET Windows Forms
+- MySQL Database
+- Object-Oriented Programming (OOP)
+- Collections (Lists & Dictionaries)
+- System.Media (Audio)
+- Event-driven programming
+
+---
+
+# Database Setup
+
+Run the following SQL script in MySQL:
+
+```sql
+CREATE DATABASE CyberBot;
+
+USE CyberBot;
+
+CREATE TABLE Tasks (
+    TaskID INT AUTO_INCREMENT PRIMARY KEY,
+    Title VARCHAR(100),
+    Description TEXT,
+    ReminderDate DATETIME,
+    Completed BOOLEAN DEFAULT FALSE
+);
 
 ---
 
