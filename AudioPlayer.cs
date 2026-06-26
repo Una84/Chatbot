@@ -9,11 +9,12 @@ namespace CybersecurityAwarenessBot
         {
             try
             {
-                string path = Path.Combine("Assets", "greeting.wav");
+                string file = Path.Combine("Assets", "greeting.wav");
 
-                if (File.Exists(path))
+                if (File.Exists(file))
                 {
-                    SoundPlayer player = new SoundPlayer(path);
+                    SoundPlayer player = new SoundPlayer(file);
+
                     player.Play();
                 }
             }
