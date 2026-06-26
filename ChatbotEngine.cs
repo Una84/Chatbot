@@ -1,143 +1,158 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace CybersecurityAwarenessBot
 {
     public class ChatbotEngine
     {
-        private Random random = new Random();
-
+        private NLPProcessor nlp;
         private MemoryManager memory;
+        private TaskManager taskManager;
+        private QuizManager quizManager;
+        private ActivityLogger logger;
 
-        private Dictionary<string, List<string>> keywordResponses;
-
-        public ChatbotEngine(MemoryManager memoryManager)
+        public ChatbotEngine(
+            MemoryManager memory,
+            TaskManager taskManager,
+            QuizManager quizManager,
+            ActivityLogger logger)
         {
-            memory = memoryManager;
+            this.memory = memory;
+            this.taskManager = taskManager;
+            this.quizManager = quizManager;
+            this.logger = logger;
 
-            keywordResponses = new Dictionary<string, List<string>>()
-            {
-                {
-                    "password",
-                    new List<string>()
-                    {
-                        "Use strong passwords with uppercase, lowercase, numbers, and symbols.",
-                        "Avoid using personal details in your passwords.",
-                        "Use a different password for every account."
-                    }
-                },
-
-                {
-                    "phishing",
-                    new List<string>()
-                    {
-                        "Be careful of suspicious emails asking for personal information.",
-                        "Never click unknown links in emails or messages.",
-                        "Scammers often pretend to be trusted companies."
-                    }
-                },
-
-                {
-                    "privacy",
-                    new List<string>()
-                    {
-                        "Review your privacy settings regularly.",
-                        "Avoid sharing sensitive information online.",
-                        "Use two-factor authentication to improve privacy."
-                    }
-                },
-
-                {
-                    "scam",
-                    new List<string>()
-                    {
-                        "Online scams often create urgency to trick users.",
-                        "Never share banking details with strangers online.",
-                        "Always verify suspicious messages before responding."
-                    }
-                }
-            };
+            nlp = new NLPProcessor();
         }
 
-        public string GetResponse(string input)
+        public string ProcessInput(string input)
         {
-            input = input.ToLower();
+            if (string.IsNullOrWhiteSpace(input))
+                return "Please enter a message.";
 
+            string intent = nlp.DetectIntent(input.ToLower());
+
+            logger.Add("User input received: " + input);
+
+            // SENTIMENT DETECTION (simple simulation)
             DetectSentiment(input);
 
-            foreach (var keyword in keywordResponses.Keys)
+            switch (intent)
             {
-                if (input.Contains(keyword))
-                {
-                    memory.LastTopic = keyword;
+                case "ADDTASK":
+                    logger.Add("Task intent detected");
 
-                    if (input.Contains("interested"))
-                    {
-                        memory.FavouriteTopic = keyword;
+                    return HandleTaskCreation(input);
 
-                        return $"Great! I'll remember that you're interested in {keyword}. " +
-                               GetRandomResponse(keyword);
-                    }
+                case "QUIZ":
+                    logger.Add("Quiz started");
 
-                    return GetRandomResponse(keyword);
-                }
+                    return "Starting cybersecurity quiz... (Open Quiz tab)";
+
+                case "LOG":
+                    logger.Add("Activity log requested");
+
+                    return "Open Activity Log tab to view actions.";
+
+                case "PASSWORD":
+                    return GetPasswordTip();
+
+                case "PHISHING":
+                    return GetPhishingTip();
+
+                case "PRIVACY":
+                    return GetPrivacyTip();
+
+                case "SCAM":
+                    return GetScamTip();
+
+                default:
+                    return GetGeneralResponse(input);
             }
-
-            if (input.Contains("another tip") ||
-                input.Contains("tell me more") ||
-                input.Contains("explain more"))
-            {
-                if (!string.IsNullOrEmpty(memory.LastTopic))
-                {
-                    return $"Here is another tip about {memory.LastTopic}: " +
-                           GetRandomResponse(memory.LastTopic);
-                }
-            }
-
-            if (input.Contains("how are you"))
-            {
-                return "I'm functioning perfectly and ready to help you stay safe online.";
-            }
-
-            if (input.Contains("what is cybersecurity"))
-            {
-                return "Cybersecurity is the practice of protecting systems, networks, and data from cyber threats.";
-            }
-
-            if (!string.IsNullOrEmpty(memory.FavouriteTopic))
-            {
-                return $"As someone interested in {memory.FavouriteTopic}, remember to stay cautious online.";
-            }
-
-            return "I'm not sure I understand. Can you try rephrasing?";
-        }
-
-        private string GetRandomResponse(string keyword)
-        {
-            var responses = keywordResponses[keyword];
-
-            int index = random.Next(responses.Count);
-
-            return responses[index];
         }
 
         private void DetectSentiment(string input)
         {
             if (input.Contains("worried"))
             {
-                memory.LastTopic = "scam";
+                memory.LastSentiment = "worried";
+                logger.Add("Sentiment detected: worried");
+            }
+            else if (input.Contains("curious"))
+            {
+                memory.LastSentiment = "curious";
+                logger.Add("Sentiment detected: curious");
+            }
+            else if (input.Contains("frustrated"))
+            {
+                memory.LastSentiment = "frustrated";
+                logger.Add("Sentiment detected: frustrated");
+            }
+        }
+
+        private string HandleTaskCreation(string input)
+        {
+            string taskTitle = input;
+
+            TaskItem task = new TaskItem
+            {
+                Title = taskTitle,
+                Description = "Cybersecurity task added via chatbot.",
+                ReminderDate = DateTime.Now.AddDays(3),
+                Completed = false
+            };
+
+            taskManager.AddTask(task);
+
+            logger.Add("Task created: " + taskTitle);
+
+            return "Task added successfully. Would you like to set a reminder?";
+        }
+
+        private string GetPasswordTip()
+        {
+            logger.Add("Password tip shown");
+
+            return "Use strong passwords with letters, numbers, and symbols. Avoid reusing passwords.";
+        }
+
+        private string GetPhishingTip()
+        {
+            logger.Add("Phishing tip shown");
+
+            string[] tips =
+            {
+                "Never click suspicious links in emails.",
+                "Check the sender carefully before responding.",
+                "Report phishing emails immediately."
+            };
+
+            return tips[new Random().Next(tips.Length)];
+        }
+
+        private string GetPrivacyTip()
+        {
+            logger.Add("Privacy tip shown");
+
+            return "Review privacy settings regularly and avoid oversharing personal information.";
+        }
+
+        private string GetScamTip()
+        {
+            logger.Add("Scam tip shown");
+
+            return "Be cautious of messages asking for money or urgent action.";
+        }
+
+        private string GetGeneralResponse(string input)
+        {
+            logger.Add("Fallback response used");
+
+            if (!string.IsNullOrEmpty(memory.UserName))
+            {
+                return $"Hi {memory.UserName}, I’m here to help you stay safe online. Try asking about passwords, scams, or phishing.";
             }
 
-            if (input.Contains("frustrated"))
-            {
-                memory.LastTopic = "password";
-            }
-
-            if (input.Contains("curious"))
-            {
-                memory.LastTopic = "privacy";
-            }
+            return "I’m not sure I understand. Try asking about cybersecurity topics.";
         }
     }
 }
