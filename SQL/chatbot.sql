@@ -1,0 +1,16 @@
+CREATE DATABASE CyberBot;
+
+USE CyberBot;
+
+CREATE TABLE Tasks
+(
+TaskID INT AUTO_INCREMENT PRIMARY KEY,
+
+Title VARCHAR(100),
+
+Description TEXT,
+
+ReminderDate DATETIME,
+
+Completed BOOLEAN
+);
